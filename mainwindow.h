@@ -90,7 +90,8 @@ public:
 
 signals:
     //threads
-    void openPort(QString port);
+    //void openPort(QString port);
+    void openPort(QString port, int baudrate = 115200);
     void closePort(bool reopen);
     void shutdown();
     void sendGcode(QString line, bool recordResponseOnFail = false, int waitCount = SHORT_WAIT_SEC);
@@ -180,6 +181,7 @@ private:
     QString directory;
     QString nameFilter;
     QString lastOpenPort;
+    QString lastOpenPortBR;
     QByteArray fileOpenDialogState;
     int waitTime;
     double zJogRate;

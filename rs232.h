@@ -52,7 +52,8 @@ class RS232
 public:
     RS232();
     //methods
-    bool OpenComport(QString commPortStr);
+    //bool OpenComport(QString commPortStr);
+    bool OpenComport(QString commPortStr, int baudrate = 115200);
     int PollComport(char *buf, int size);
     int PollComportLine(char *buf, int size);
     int SendBuf(const char *buf, int size);

@@ -14,13 +14,19 @@ RS232::RS232()
 {
 }
 
-bool RS232::OpenComport(QString commPortStr)
+//bool RS232::OpenComport(QString commPortStr)
+bool RS232::OpenComport(QString commPortStr, int baudrate)
 {
     if (port != NULL)
         CloseComport();
 
     //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
     PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+    
+   // printf("PORT OPENCOMPORT BaudRate %i\n", baudrate);
+    
+    settings.BaudRate = (BaudRateType) baudrate;
+    //printf("PORT OPENCOMPORT BaudRate %i\n", (int) settings.BaudRate);
 
     port = new QextSerialPort(commPortStr, settings, QextSerialPort::Polling);
 

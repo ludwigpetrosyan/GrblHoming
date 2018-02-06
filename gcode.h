@@ -66,7 +66,8 @@ signals:
     void setVisCurrLine(int currLine);
 
 public slots:
-    void openPort(QString commPortStr);
+    //void openPort(QString commPortStr);
+    void openPort(QString commPortStr, int baudrate = 115200);
     void closePort(bool reopen);
     void sendGcode(QString line);
     void sendGcodeAndGetResult(int id, QString line);

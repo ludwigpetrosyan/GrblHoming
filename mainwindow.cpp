@@ -66,7 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnGoHomeSafe,SIGNAL(clicked()),this,SLOT(goHomeSafe()));
 
     connect(this, SIGNAL(sendFile(QString)), &gcode, SLOT(sendFile(QString)));
-    connect(this, SIGNAL(openPort(QString)), &gcode, SLOT(openPort(QString)));
+    //connect(this, SIGNAL(openPort(QString)), &gcode, SLOT(openPort(QString)));
+    connect(this, SIGNAL(openPort(QString, int)), &gcode, SLOT(openPort(QString, int)));
     connect(this, SIGNAL(closePort(bool)), &gcode, SLOT(closePort(bool)));
     connect(this, SIGNAL(sendGcode(QString)), &gcode, SLOT(sendGcode(QString)));
     connect(this, SIGNAL(gotoXYZ(QString)), &gcode, SLOT(gotoXYZ(QString)));
@@ -125,6 +126,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
 
     int portIndex = 0;
+    
     for (int i = 0; i < ports.size(); i++)
     {
         ui->cmbPort->addItem(ports.at(i).portName.toLocal8Bit().constData());
@@ -138,6 +140,24 @@ MainWindow::MainWindow(QWidget *parent) :
         //diag("enumerator name: %s\n", ports.at(i).enumName.toLocal8Bit().constData());
         //diag("===================================\n\n");
     }
+    
+    ui->cmbBaudRate->addItem("9600");
+    ui->cmbBaudRate->addItem("19200");
+    ui->cmbBaudRate->addItem("38400");
+    ui->cmbBaudRate->addItem("57600");
+    ui->cmbBaudRate->addItem("74880");
+    ui->cmbBaudRate->addItem("115200");
+    ui->cmbBaudRate->addItem("230400");
+    ui->cmbBaudRate->addItem("250000");
+    ui->cmbBaudRate->addItem("500000");
+    
+    int portbrIndex = 0;
+    for(int i =0; i < 9; i++){
+		if(ui->cmbBaudRate->itemText(i) == lastOpenPortBR){
+			portbrIndex = i;
+		}
+	}
+    ui->cmbBaudRate->setCurrentIndex(portbrIndex);
 
     if (ports.size() > 0)
         ui->cmbPort->setCurrentIndex(portIndex);
@@ -296,12 +316,17 @@ void MainWindow::resetProgress()
 // the controller.
 void MainWindow::openPortCtl(bool reopen)
 {
+	int br = 115200;
     if (ui->btnOpenPort->text() == "Open")
     {
         // Port is closed if the button says 'Open'
         QString portStr = ui->cmbPort->currentText();
+        QString portBr = ui->cmbBaudRate->currentText();
+        br = portBr.toInt();
+        //printf("PORT BAUD RATE %i\n", br);
         ui->btnOpenPort->setEnabled(false);
-        emit openPort(portStr);
+        //emit openPort(portStr);
+        emit openPort(portStr, br);
     }
     else
     {
@@ -327,6 +352,7 @@ void MainWindow::openPortCtl(bool reopen)
         ui->groupBoxSendFile->setEnabled(false);
         ui->groupBoxManualGCode->setEnabled(false);
         ui->cmbPort->setEnabled(false);
+        ui->cmbBaudRate->setEnabled(false);
         ui->btnOpenPort->setEnabled(false);
         ui->btnGRBL->setEnabled(false);
 
@@ -346,6 +372,7 @@ void MainWindow::portIsClosed(bool reopen)
     ui->groupBoxSendFile->setEnabled(false);
     ui->groupBoxManualGCode->setEnabled(false);
     ui->cmbPort->setEnabled(true);
+    ui->cmbBaudRate->setEnabled(true);
     ui->btnOpenPort->setEnabled(true);
     ui->btnOpenPort->setText("Open");
     ui->btnOpenPort->setStyleSheet(styleSheet);
@@ -419,6 +446,7 @@ void MainWindow::enableGrblDialogButton()
     ui->btnOpenPort->setText(CLOSE_BUTTON_TEXT);
     ui->btnOpenPort->setStyleSheet("* { background-color: rgb(255,125,100) }");
     ui->cmbPort->setEnabled(false);
+    ui->cmbBaudRate->setEnabled(false);
     ui->tabAxisVisualizer->setEnabled(true);
     ui->groupBoxSendFile->setEnabled(true);
     ui->groupBoxManualGCode->setEnabled(true);
@@ -748,6 +776,7 @@ void MainWindow::readSettings()
     directory = settings.value(SETTINGS_DIRECTORY).value<QString>();
     nameFilter = settings.value(SETTINGS_NAME_FILTER).value<QString>();
     lastOpenPort = settings.value(SETTINGS_PORT).value<QString>();
+    lastOpenPortBR = settings.value(SETTINGS_PORT_BAUDRATE).value<QString>();
 
     updateSettingsFromOptionDlg(settings);
 }
@@ -817,7 +846,7 @@ void MainWindow::writeSettings()
     settings.setValue(SETTINGS_NAME_FILTER, nameFilter);
     settings.setValue(SETTINGS_DIRECTORY, directory);
     settings.setValue(SETTINGS_PORT, ui->cmbPort->currentText());
-
+    settings.setValue(SETTINGS_PORT_BAUDRATE, ui->cmbBaudRate->currentText());
     settings.setValue(SETTINGS_ABSOLUTE_AFTER_AXIS_ADJ, ui->chkRestoreAbsolute->isChecked());
 }
 

@@ -21,13 +21,15 @@ GCode::GCode()
     startTimer(1000);
 }
 
-void GCode::openPort(QString commPortStr)
+void GCode::openPort(QString commPortStr, int baudrate)
 {
     clearToHome();
 
     currComPort = commPortStr;
+    //printf("Gcode OPEN PORT BaudRate %i\n", baudrate);
 
-    if (port.OpenComport(commPortStr))
+   //if (port.OpenComport(commPortStr))
+     if (port.OpenComport(commPortStr, baudrate))
     {
         emit portIsOpen(true);
     }
@@ -623,6 +625,7 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     QString prepend;
     QString append;
     QString preamble = "([a-zA-Z]+),|MPos:";
+    //QString preamble_state = "<";
     int captureCount = 4;
 
     if (!doubleDollarFormat)
@@ -633,11 +636,12 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         captureCount = 3;
     }
     
-    //char *c_str = received.toLatin1().data();
+     //char *c_str = received.toLatin1().data();
     //printf("RECEIVED %s\n", c_str);
 
     const QString coordRegExp(prepend + "(-*\\d+\\.\\d+),(-*\\d+\\.\\d+),(-*\\d+\\.\\d+)" + append);
     const QRegExp rxStateMPos(preamble + coordRegExp);
+    const QRegExp rxState("(<)([a-zA-Z]+)|");
     const QRegExp rxWPos("|WPos:" + coordRegExp);
     //const QRegExp rxWco("|WCO:" + coordRegExp);
     //const QRegExp rxWco("([a-zA-Z]+)\\|WCO:" + coordRegExp);
@@ -669,7 +673,7 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     //end my staff
     
     
-    
+   rxState.indexIn(received, 0);
 
     if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount
         && rxWPos.indexIn(received, 0) != -1 && rxWPos.captureCount() == 3)
@@ -677,11 +681,15 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     //if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount )
     {
         QStringList list = rxStateMPos.capturedTexts();
+        QStringList list_state = rxState.capturedTexts();
         int index = 1;
 
-        if (doubleDollarFormat)
+        if (doubleDollarFormat){
             state = list.at(index++);
-
+		}
+		//state = list_state.at(index++);
+		state = list_state.at(2);
+		
         machineCoord.x = list.at(index++).toFloat();
         machineCoord.y = list.at(index++).toFloat();
         machineCoord.z = list.at(index++).toFloat();
