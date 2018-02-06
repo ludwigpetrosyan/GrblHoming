@@ -19,7 +19,8 @@ bool RS232::OpenComport(QString commPortStr)
     if (port != NULL)
         CloseComport();
 
-    PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+    //PortSettings settings = {BAUD9600, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
+    PortSettings settings = {BAUD115200, DATA_8, PAR_NONE, STOP_1, FLOW_OFF, 10};
 
     port = new QextSerialPort(commPortStr, settings, QextSerialPort::Polling);
 

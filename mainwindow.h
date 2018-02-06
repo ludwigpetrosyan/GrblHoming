@@ -101,6 +101,7 @@ signals:
     void setProgress(int percent);
     void setRuntime(QString runtime);
     void sendSetHome();
+    void sendSetProbe();
     void sendGrblReset();
     void sendGrblUnlock();
     void goToHome();
@@ -118,6 +119,7 @@ private slots:
     void incY();
     void incZ();
     void setHome();
+    void setProbe();
         //manual
     void gotoXYZ();
         //send Gcode

@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->IncYBtn,SIGNAL(clicked()),this,SLOT(incY()));
     connect(ui->IncZBtn,SIGNAL(clicked()),this,SLOT(incZ()));
     connect(ui->btnSetHome,SIGNAL(clicked()),this,SLOT(setHome()));
+    connect(ui->btnProbe,SIGNAL(clicked()),this,SLOT(setProbe()));
     connect(ui->Command,SIGNAL(editingFinished()),this,SLOT(gotoXYZ()));
     connect(ui->Begin,SIGNAL(clicked()),this,SLOT(begin()));
     connect(ui->openFile,SIGNAL(clicked()),this,SLOT(openFile()));
@@ -76,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setProgress(int)), ui->progressFileSend, SLOT(setValue(int)));
     connect(this, SIGNAL(setRuntime(QString)), ui->outputRuntime, SLOT(setText(QString)));
     connect(this, SIGNAL(sendSetHome()), &gcode, SLOT(grblSetHome()));
+    connect(this, SIGNAL(sendSetProbe()), &gcode, SLOT(grblSetProbe()));
     connect(this, SIGNAL(sendGrblReset()), &gcode, SLOT(sendGrblReset()));
     connect(this, SIGNAL(sendGrblUnlock()), &gcode, SLOT(sendGrblUnlock()));
     connect(this, SIGNAL(goToHome()), &gcode, SLOT(goToHome()));
@@ -150,6 +152,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->labelRuntime->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
@@ -202,6 +205,7 @@ void MainWindow::begin()
     ui->btnGRBL->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->btnProbe->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     emit sendFile(ui->filePath->text());
 }
@@ -215,6 +219,7 @@ void MainWindow::stop()
     ui->Stop->setEnabled(false);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
@@ -250,6 +255,7 @@ void MainWindow::stopSending()
     ui->btnOpenPort->setEnabled(true);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
@@ -267,6 +273,14 @@ void MainWindow::setHome()
 {
     resetProgress();
     sendSetHome();
+}
+
+void MainWindow::setProbe()
+{
+	//printf("Probe button Clicked\n");
+    resetProgress();
+    //disableAllButtons();
+    sendSetProbe();
 }
 
 void MainWindow::resetProgress()
@@ -337,6 +351,7 @@ void MainWindow::portIsClosed(bool reopen)
     ui->btnOpenPort->setStyleSheet(styleSheet);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
@@ -373,6 +388,7 @@ void MainWindow::adjustedAxis()
     ui->openFile->setEnabled(true);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
@@ -390,6 +406,7 @@ void MainWindow::disableAllButtons()
     ui->openFile->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
@@ -406,6 +423,7 @@ void MainWindow::enableGrblDialogButton()
     ui->groupBoxSendFile->setEnabled(true);
     ui->groupBoxManualGCode->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);

@@ -75,6 +75,7 @@ public slots:
     void axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj);
     void setResponseWait(int waitTime, double zJogRate, bool useMm, bool zRateLimit, double zRateLimitAmount, double xyRateLimitAmount, bool useAggressivePreload);
     void grblSetHome();
+    void grblSetProbe();
     void sendGrblReset();
     void sendGrblUnlock();
     void goToHome();
@@ -117,7 +118,7 @@ private:
     bool incorrectMeasurementUnits;
     bool incorrectLcdDisplayUnits;
     bool userSetMmMode;
-    Coord3D machineCoord, workCoord;
+    Coord3D machineCoord, workCoord, wcoCoord;
     Coord3D machineCoordLastIdlePos, workCoordLastIdlePos;
     bool zRateLimit;
     double zRateLimitAmount;

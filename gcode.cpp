@@ -103,6 +103,13 @@ void GCode::grblSetHome()
     gotoXYZ("G92 x0 y0 z0");
 }
 
+void GCode::grblSetProbe()
+{
+    //clearToHome();
+	//printf("grblSetProbe\n");
+    gotoXYZ("G38.2 F10 Z -3");
+}
+
 void GCode::goToHome()
 {
     if (!motionOccurred)
@@ -615,23 +622,59 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     QString state;
     QString prepend;
     QString append;
-    QString preamble = "([a-zA-Z]+),MPos:";
+    QString preamble = "([a-zA-Z]+),|MPos:";
     int captureCount = 4;
 
     if (!doubleDollarFormat)
     {
         prepend = "\\[";
         append = "\\]";
-        preamble = "MPos:";
+        preamble = "|MPos:";
         captureCount = 3;
     }
+    
+    //char *c_str = received.toLatin1().data();
+    //printf("RECEIVED %s\n", c_str);
 
     const QString coordRegExp(prepend + "(-*\\d+\\.\\d+),(-*\\d+\\.\\d+),(-*\\d+\\.\\d+)" + append);
     const QRegExp rxStateMPos(preamble + coordRegExp);
-    const QRegExp rxWPos("WPos:" + coordRegExp);
+    const QRegExp rxWPos("|WPos:" + coordRegExp);
+    //const QRegExp rxWco("|WCO:" + coordRegExp);
+    //const QRegExp rxWco("([a-zA-Z]+)\\|WCO:" + coordRegExp);
+    const QRegExp rxWco("\\|WCO:" + coordRegExp);
+    //const QRegExp rxWco("WCO:([^,]*),([^,]*),(^,^>^|]*)");
+    
+    //my staff
+    if (rxWco.indexIn(received) != -1 )        
+    {
+        QStringList list = rxWco.capturedTexts();
+
+        //printf("#############WCO \n");
+        
+        //char *c_str1 = list.at(1).toLatin1().data();
+		//printf("RECEIVED %s\n", c_str1);
+		//char *c_str2 = list.at(2).toLatin1().data();
+		//printf("RECEIVED %s\n", c_str2);
+		//char *c_str3 = list.at(3).toLatin1().data();
+		//printf("RECEIVED %s\n", c_str3);
+
+        list = rxWco.capturedTexts();
+        wcoCoord.x = list.at(1).toFloat();
+        wcoCoord.y = list.at(2).toFloat();
+        wcoCoord.z = list.at(3).toFloat();
+        
+        //printf("####WCO Coordinates WX%f WY%f WZ%f \n",wcoCoord.x, wcoCoord.y, wcoCoord.z);
+
+    }
+    //end my staff
+    
+    
+    
 
     if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount
         && rxWPos.indexIn(received, 0) != -1 && rxWPos.captureCount() == 3)
+        
+    //if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount )
     {
         QStringList list = rxStateMPos.capturedTexts();
         int index = 1;
@@ -642,11 +685,19 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         machineCoord.x = list.at(index++).toFloat();
         machineCoord.y = list.at(index++).toFloat();
         machineCoord.z = list.at(index++).toFloat();
+        
+        //printf("Coordinates X%f Y%f Z%f \n",machineCoord.x, machineCoord.y, machineCoord.z);
 
-        list = rxWPos.capturedTexts();
-        workCoord.x = list.at(1).toFloat();
-        workCoord.y = list.at(2).toFloat();
-        workCoord.z = list.at(3).toFloat();
+        //list = rxWPos.capturedTexts();
+        //workCoord.x = list.at(1).toFloat();
+        //workCoord.y = list.at(2).toFloat();
+        //workCoord.z = list.at(3).toFloat();
+        
+        workCoord.x = machineCoord.x - wcoCoord.x;
+        workCoord.y = machineCoord.y - wcoCoord.y;
+        workCoord.z = machineCoord.z - wcoCoord.z;
+        
+        //printf("Coordinates WX%f WY%f WZ%f \n",workCoord.x, workCoord.y, workCoord.z);
 
         diag("Decoded: State:%s MPos: %f,%f,%f WPos: %f,%f,%f\n",
              state.toLocal8Bit().constData(),
@@ -661,6 +712,7 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         emit setLastState(state);
 
         lastState = state;
+        //printf("Return Coordinates WX%f WY%f WZ%f \n",workCoord.x, workCoord.y, workCoord.z);
         return;
     }
     else if (received.indexOf("MPos:") != -1)
@@ -686,6 +738,7 @@ void GCode::sendStatusList(QStringList& listToSend)
 #pragma GCC diagnostic ignored "-Wunused-parameter" push
 void GCode::timerEvent(QTimerEvent *event)
 {
+	//printf("$$$$$TIMER EVENT$$$$$$\n");
     if (port.isPortOpen())
     {
         char tmp[BUF_SIZE + 1] = {0};
@@ -693,6 +746,7 @@ void GCode::timerEvent(QTimerEvent *event)
 
         for (int i = 0; i < 10 && !shutdownState.get() && !resetState.get(); i++)
         {
+			//printf("GET STATES\n");
             int n = port.PollComport(tmp, BUF_SIZE);
             if (n == 0)
                 break;
@@ -700,20 +754,43 @@ void GCode::timerEvent(QTimerEvent *event)
             tmp[n] = 0;
             result.append(tmp);
             diag("GOT-TE:%s\n", tmp);
+            //printf("END GET STATES %s\n",tmp);
         }
 
         if (shutdownState.get())
         {
+			//printf("SHUTDOWN\n");
             return;
         }
 
         QStringList list = QString(result).split(port.getDetectedLineFeed());
         QStringList listToSend;
+        
+        //char *c_str1;
+        
         for (int i = 0; i < list.size(); i++)
         {
+			//c_str1 = list.at(i).toLatin1().data();
+		    //printf("DETECTED LIST %s SIZE %i\n", c_str1, list.size());
+			
             if (list.at(i).length() > 0 && (list.at(i) != "ok" || (list.at(i) == "ok" && abortState.get())))
                 listToSend.append(list.at(i));
         }
+        
+        //printf("LIST TO SEND SIZE %i\n", listToSend.size());
+        
+        for (int i = 0; i < listToSend.size(); i++)
+        {
+			//c_str1 = listToSend.at(i).toLatin1().data();
+		    //printf("LIST TO SEND %s SIZE %i\n", c_str1, listToSend.size());
+			
+        }
+        
+        if(!listToSend.size()){
+			//printf("*******sending REQUEST_CURRENT_POS \n");
+			sendGcodeLocal(REQUEST_CURRENT_POS);
+			
+		}
 
         sendStatusList(listToSend);
     }
@@ -1214,10 +1291,10 @@ void GCode::axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj)
     QString cmd = QString("G01 ").append(axis)
             .append(QString::number(coord));
 
-    if (axis == 'Z')
-    {
+    //if (axis == 'Z')
+    //{
         cmd.append(" F").append(QString::number(zJogRate));
-    }
+    //}
 
     SendJog(cmd, absoluteAfterAxisAdj);
 
