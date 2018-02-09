@@ -636,8 +636,8 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         captureCount = 3;
     }
     
-     //char *c_str = received.toLatin1().data();
-    //printf("RECEIVED %s\n", c_str);
+     char *c_str = received.toLatin1().data();
+     printf("RECEIVED %s\n", c_str);
 
     const QString coordRegExp(prepend + "(-*\\d+\\.\\d+),(-*\\d+\\.\\d+),(-*\\d+\\.\\d+)" + append);
     const QRegExp rxStateMPos(preamble + coordRegExp);

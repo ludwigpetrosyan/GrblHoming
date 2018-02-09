@@ -6,6 +6,14 @@
 
 #define SCREEN_SCALE_FILE   0.85
 
+typedef struct poscoord 
+{
+	double x;
+	double y;
+	bool mm;
+} poscoord;
+
+
 class RenderItemList
 {
 public:
@@ -20,7 +28,10 @@ public:
     void drawPoint(QPainter& painter, const PosItem& point);
     bool setCurrFileLine(const int currLine);
     void setLivePoint(const PosItem& livePoint);
+    void setLivePointXY(const PosItem& xyPoint);
+    void getPosCoord(poscoord* pcor, double xx, double yy);
     void updateLivePoint();
+    void updateXYPoint();
 
 private:
     void clearList();
@@ -36,7 +47,9 @@ private:
     bool mm;
     int currFileLine;
     PosItem livePoint;
+    PosItem xyPoint;
     QFont font;
 };
+
 
 #endif // RENDERITEMLIST_H
