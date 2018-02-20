@@ -11,3 +11,5 @@ settings
 ui_*.h
 Output/
 android/
+GrblController.app/
+nbproject/

@@ -18,7 +18,8 @@ GCode::GCode()
       maxZ(0), useAggressivePreload(false), motionOccurred(false)
 {
     // use base class's timer - use it to capture random text from the controller
-    startTimer(1000);
+    //startTimer(1000);
+    startTimer(500);
 }
 
 void GCode::openPort(QString commPortStr, int baudrate)
@@ -114,35 +115,58 @@ void GCode::grblSetProbe()
 
 void GCode::goToHome()
 {
-    if (!motionOccurred)
-        return;
+//    if (!motionOccurred)
+//        return;
+//    double maxZOver = maxZ;
+//    if (doubleDollarFormat)
+//    {
+//        maxZOver += (userSetMmMode ? PRE_HOME_Z_ADJ_MM : (PRE_HOME_Z_ADJ_MM / MM_IN_AN_INCH));
+//    }
+//    else
+//    {
+//        // all reporting is in mm
+//        maxZOver += PRE_HOME_Z_ADJ_MM;
+//    }
+//    printf("Go Home G0Z %f\n", maxZOver);
+//    QString zpos = QString::number(maxZOver);
+//    gotoXYZ(QString("G0 z").append(zpos));
+//    gotoXYZ(QString("G0 Z5"));
+//    gotoXYZ(QString("G0 x0 y0"));
+//    maxZ -= maxZOver;
+//    motionOccurred = false;
+//    
+    
+    gotoXYZ(QString("G90G0 Z5"));
+    gotoXYZ(QString("G90G0 x0 y0"));
+    maxZ = 5;
 
-    double maxZOver = maxZ;
-
-    if (doubleDollarFormat)
-    {
-        maxZOver += (userSetMmMode ? PRE_HOME_Z_ADJ_MM : (PRE_HOME_Z_ADJ_MM / MM_IN_AN_INCH));
-    }
-    else
-    {
-        // all reporting is in mm
-        maxZOver += PRE_HOME_Z_ADJ_MM;
-    }
-
-    QString zpos = QString::number(maxZOver);
-
-    gotoXYZ(QString("G0 z").append(zpos));
-    gotoXYZ(QString("G1 x0 y0"));
-
-    maxZ -= maxZOver;
-
-    motionOccurred = false;
+    
 }
+
+void GCode::goToZHome()
+{
+    printf("Go ToZHome gCode\n");
+//    if (!motionOccurred)
+//        return;
+//
+//    double maxZOver = maxZ;
+
+    gotoXYZ(QString("G90G1Z0F50"));
+
+    maxZ = 0;
+
+    //motionOccurred = false;
+}
+
 
 // Slot called from other threads (i.e. main window, grbl dialog, etc.)
 void GCode::sendGcode(QString line)
 {
     bool checkMeasurementUnits = false;
+    
+//    char *c_str = line.toLatin1().data();
+//    printf("SEND %s\n", c_str);
+
 
     if (line.length() == 0)
     {
@@ -218,6 +242,12 @@ void GCode::sendGcodeAndGetResult(int id, QString line)
     if (!sendGcodeInternal(line, result, false, SHORT_WAIT_SEC, false))
         result.clear();
 
+    
+//    char *c_str = line.toLatin1().data();
+//    printf("SEND1 %s\n", c_str);
+//    char *c_str1 = result.toLatin1().data();
+//    printf("RESULT %s\n", c_str1);
+    
     emit gcodeResult(id, result);
 }
 
@@ -287,6 +317,9 @@ bool GCode::sendGcodeLocal(QString line, bool recordResponseOnFail /* = false */
 // Wrapped method. Should only be called from above method.
 bool GCode::sendGcodeInternal(QString line, QString& result, bool recordResponseOnFail, int waitSec, bool aggressive)
 {
+//    char *c_str = line.toLatin1().data();
+//    printf("SENDInternal %s\n", c_str);
+    
     if (!port.isPortOpen())
     {
         QString msg = "Port not available yet";
@@ -625,6 +658,7 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     QString prepend;
     QString append;
     QString preamble = "([a-zA-Z]+),|MPos:";
+    QString preamblewpos = "([a-zA-Z]+),|WPos:";
     //QString preamble_state = "<";
     int captureCount = 4;
 
@@ -636,31 +670,27 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         captureCount = 3;
     }
     
-     //char *c_str = received.toLatin1().data();
-    //printf("RECEIVED %s\n", c_str);
+//    char *c_str = received.toLatin1().data();
+//    printf("RECEIVED %s\n", c_str);
 
     const QString coordRegExp(prepend + "(-*\\d+\\.\\d+),(-*\\d+\\.\\d+),(-*\\d+\\.\\d+)" + append);
     const QRegExp rxStateMPos(preamble + coordRegExp);
     const QRegExp rxState("(<)([a-zA-Z]+)|");
-    const QRegExp rxWPos("|WPos:" + coordRegExp);
-    //const QRegExp rxWco("|WCO:" + coordRegExp);
-    //const QRegExp rxWco("([a-zA-Z]+)\\|WCO:" + coordRegExp);
+    const QRegExp rxWPos(preamblewpos + coordRegExp);
     const QRegExp rxWco("\\|WCO:" + coordRegExp);
-    //const QRegExp rxWco("WCO:([^,]*),([^,]*),(^,^>^|]*)");
     
     //my staff
     if (rxWco.indexIn(received) != -1 )        
     {
         QStringList list = rxWco.capturedTexts();
 
-        //printf("#############WCO \n");
-        
-        //char *c_str1 = list.at(1).toLatin1().data();
-		//printf("RECEIVED %s\n", c_str1);
-		//char *c_str2 = list.at(2).toLatin1().data();
-		//printf("RECEIVED %s\n", c_str2);
-		//char *c_str3 = list.at(3).toLatin1().data();
-		//printf("RECEIVED %s\n", c_str3);
+//        printf("#############WCO \n");
+//        char *c_str1 = list.at(1).toLatin1().data();
+//        printf("RECEIVED %s\n", c_str1);
+//        char *c_str2 = list.at(2).toLatin1().data();
+//        printf("RECEIVED %s\n", c_str2);
+//        char *c_str3 = list.at(3).toLatin1().data();
+//        printf("RECEIVED %s\n", c_str3);
 
         list = rxWco.capturedTexts();
         wcoCoord.x = list.at(1).toFloat();
@@ -674,53 +704,70 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
     
     
    rxState.indexIn(received, 0);
+   
+   int mpos_recived = rxStateMPos.indexIn(received, 0);
+   int wpos_recived = rxWPos.indexIn(received, 0);
+   
+   //printf("Mpos %d Count %d;  Wpos %d Count %d\n", mpos_recived, rxStateMPos.captureCount(), wpos_recived, rxWPos.captureCount());
 
-    if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount
-        && rxWPos.indexIn(received, 0) != -1 && rxWPos.captureCount() == 3)
+//    if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount
+//        && rxWPos.indexIn(received, 0) != -1 && rxWPos.captureCount() == captureCount)
         
-    //if (rxStateMPos.indexIn(received, 0) != -1 && rxStateMPos.captureCount() == captureCount )
+    if ((mpos_recived != -1 && rxStateMPos.captureCount() == captureCount)
+        || (wpos_recived != -1 && rxWPos.captureCount() == captureCount))
+        
     {
-        QStringList list = rxStateMPos.capturedTexts();
-        QStringList list_state = rxState.capturedTexts();
+        QStringList list_state = rxState.capturedTexts();        
+        
         int index = 1;
 
         if (doubleDollarFormat){
-            state = list.at(index++);
-		}
-		//state = list_state.at(index++);
-		state = list_state.at(2);
+            state = list_state.at(index++);
+        }
+        state = list_state.at(2);
 		
-        machineCoord.x = list.at(index++).toFloat();
-        machineCoord.y = list.at(index++).toFloat();
-        machineCoord.z = list.at(index++).toFloat();
-        
-        //printf("Coordinates X%f Y%f Z%f \n",machineCoord.x, machineCoord.y, machineCoord.z);
+        if(mpos_recived != -1){
+            QStringList list = rxStateMPos.capturedTexts();
+            
+            machineCoord.x = list.at(index++).toFloat();
+            machineCoord.y = list.at(index++).toFloat();
+            machineCoord.z = list.at(index++).toFloat();
 
-        //list = rxWPos.capturedTexts();
-        //workCoord.x = list.at(1).toFloat();
-        //workCoord.y = list.at(2).toFloat();
-        //workCoord.z = list.at(3).toFloat();
-        
-        workCoord.x = machineCoord.x - wcoCoord.x;
-        workCoord.y = machineCoord.y - wcoCoord.y;
-        workCoord.z = machineCoord.z - wcoCoord.z;
-        
-        //printf("Coordinates WX%f WY%f WZ%f \n",workCoord.x, workCoord.y, workCoord.z);
+            workCoord.x = machineCoord.x - wcoCoord.x;
+            workCoord.y = machineCoord.y - wcoCoord.y;
+            workCoord.z = machineCoord.z - wcoCoord.z;
 
-        diag("Decoded: State:%s MPos: %f,%f,%f WPos: %f,%f,%f\n",
-             state.toLocal8Bit().constData(),
-             machineCoord.x, machineCoord.y, machineCoord.z,
-             workCoord.x, workCoord.y, workCoord.z);
+            diag("Decoded: State:%s MPos: %f,%f,%f WPos: %f,%f,%f\n",
+                 state.toLocal8Bit().constData(),
+                 machineCoord.x, machineCoord.y, machineCoord.z,
+                 workCoord.x, workCoord.y, workCoord.z);
 
-        if (workCoord.z > maxZ)
-            maxZ = workCoord.z;
+            if (workCoord.z > maxZ)
+                maxZ = workCoord.z;
+        }
+        if(wpos_recived != -1){
+            QStringList list_wso = rxWPos.capturedTexts();
+            workCoord.x = list_wso.at(index++).toFloat();
+            workCoord.y = list_wso.at(index++).toFloat();
+            workCoord.z = list_wso.at(index++).toFloat();
 
+            machineCoord.x = workCoord.x + wcoCoord.x;
+            machineCoord.y = workCoord.y + wcoCoord.y;
+            machineCoord.z = workCoord.z + wcoCoord.z;
+
+            diag("Decoded: State:%s MPos: %f,%f,%f WPos: %f,%f,%f\n",
+                 state.toLocal8Bit().constData(),
+                 machineCoord.x, machineCoord.y, machineCoord.z,
+                 workCoord.x, workCoord.y, workCoord.z);
+
+            if (workCoord.z > maxZ)
+                maxZ = workCoord.z;
+        }
         emit updateCoordinates(machineCoord, workCoord);
         emit setLivePoint(workCoord.x, workCoord.y, userSetMmMode);
         emit setLastState(state);
 
         lastState = state;
-        //printf("Return Coordinates WX%f WY%f WZ%f \n",workCoord.x, workCoord.y, workCoord.z);
         return;
     }
     else if (received.indexOf("MPos:") != -1)
@@ -933,7 +980,8 @@ void GCode::sendFile(QString path)
             else
             {
                 int ms = pollPosTimer.elapsed();
-                if (ms >= 1000)
+                //if (ms >= 1000)
+                if (ms >= 500)
                 {
                     pollPosTimer.restart();
                     sendGcodeLocal(REQUEST_CURRENT_POS, false, -1, aggressive);

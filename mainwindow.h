@@ -106,6 +106,7 @@ signals:
     void sendGrblReset();
     void sendGrblUnlock();
     void goToHome();
+    void goToZHome();
     void setItems(QList<PosItem>);
 
 private slots:
@@ -153,6 +154,7 @@ private slots:
     void grblUnlock();
     void updateCoordinates(Coord3D machineCoord, Coord3D workCoord);
     void goHomeSafe();
+    void goZHomeSafe();
 
 private:
     // enums

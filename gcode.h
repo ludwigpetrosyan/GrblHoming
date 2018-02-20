@@ -80,6 +80,7 @@ public slots:
     void sendGrblReset();
     void sendGrblUnlock();
     void goToHome();
+    void goToZHome();
 
 protected:
     void timerEvent(QTimerEvent *event);

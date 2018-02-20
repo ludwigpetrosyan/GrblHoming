@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnResetGrbl,SIGNAL(clicked()),this,SLOT(grblReset()));
     connect(ui->btnUnlockGrbl,SIGNAL(clicked()),this,SLOT(grblUnlock()));
     connect(ui->btnGoHomeSafe,SIGNAL(clicked()),this,SLOT(goHomeSafe()));
+    connect(ui->btnGoZHome,SIGNAL(clicked()),this,SLOT(goZHomeSafe()));
 
     connect(this, SIGNAL(sendFile(QString)), &gcode, SLOT(sendFile(QString)));
     //connect(this, SIGNAL(openPort(QString)), &gcode, SLOT(openPort(QString)));
@@ -82,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(sendGrblReset()), &gcode, SLOT(sendGrblReset()));
     connect(this, SIGNAL(sendGrblUnlock()), &gcode, SLOT(sendGrblUnlock()));
     connect(this, SIGNAL(goToHome()), &gcode, SLOT(goToHome()));
+    connect(this, SIGNAL(goToZHome()), &gcode, SLOT(goToZHome()));
     connect(this, SIGNAL(setItems(QList<PosItem>)), ui->wgtVisualizer, SLOT(setItems(QList<PosItem>)));
 
     connect(&gcode, SIGNAL(sendMsg(QString)),this,SLOT(receiveMsg(QString)));
@@ -176,6 +178,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
+    ui->btnGoZHome->setEnabled(false);
     styleSheet = ui->btnOpenPort->styleSheet();
     ui->statusList->setEnabled(true);
     ui->openFile->setEnabled(true);
@@ -227,6 +230,7 @@ void MainWindow::begin()
     ui->btnSetHome->setEnabled(false);
     ui->btnProbe->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
+    ui->btnGoZHome->setEnabled(false);
     emit sendFile(ui->filePath->text());
 }
 
@@ -243,6 +247,7 @@ void MainWindow::stop()
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
+    ui->btnGoZHome->setEnabled(true);
 }
 
 void MainWindow::grblReset()
@@ -262,6 +267,12 @@ void MainWindow::goHomeSafe()
     emit goToHome();
 }
 
+void MainWindow::goZHomeSafe()
+{
+    printf("Go ToZHome Safe\n");
+    emit goToZHome();
+}
+
 // slot called from GCode class to update our state
 void MainWindow::stopSending()
 {
@@ -279,6 +290,7 @@ void MainWindow::stopSending()
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
+    ui->btnGoZHome->setEnabled(true);
     ui->openFile->setEnabled(true);
 }
 
@@ -382,6 +394,7 @@ void MainWindow::portIsClosed(bool reopen)
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
+    ui->btnGoZHome->setEnabled(false);
 
     if (reopen)
     {
@@ -419,6 +432,7 @@ void MainWindow::adjustedAxis()
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
+    ui->btnGoZHome->setEnabled(true);
 }
 
 void MainWindow::disableAllButtons()
@@ -437,6 +451,7 @@ void MainWindow::disableAllButtons()
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
+    ui->btnGoZHome->setEnabled(false);
 }
 
 void MainWindow::enableGrblDialogButton()
@@ -455,6 +470,7 @@ void MainWindow::enableGrblDialogButton()
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
+    ui->btnGoZHome->setEnabled(true);
 
     if (ui->filePath->text().length() > 0)
     {

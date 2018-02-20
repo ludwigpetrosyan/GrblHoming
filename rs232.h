@@ -29,7 +29,7 @@
 #include <Windows.h>
 #else
 // TODO - R - if I leave out Windows.h then Sleep is not found???
-#include <Windows.h>
+//#include <Windows.h>
 #include <QtGui/QWindow>
 #endif
 #endif
