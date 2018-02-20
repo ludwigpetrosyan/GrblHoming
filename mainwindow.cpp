@@ -171,6 +171,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
     ui->outputRuntime->setEnabled(false);
+    ui->Lines->setEnabled(false);
+    ui->outputLines->setEnabled(false);
+    ui->outputCurLine->setEnabled(false);
     ui->labelRuntime->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
@@ -223,6 +226,9 @@ void MainWindow::begin()
     ui->Stop->setEnabled(true);
     ui->progressFileSend->setEnabled(true);
     ui->outputRuntime->setEnabled(true);
+    ui->Lines->setEnabled(true);
+    ui->outputLines->setEnabled(true);
+    ui->outputCurLine->setEnabled(true);
     ui->labelRuntime->setEnabled(true);
     ui->openFile->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
@@ -356,6 +362,9 @@ void MainWindow::openPortCtl(bool reopen)
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
+        ui->outputLines->setEnabled(false);
+        ui->Lines->setEnabled(false);
+        ui->outputCurLine->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
         ui->btnOpenPort->setEnabled(false);
         ui->openFile->setEnabled(false);
@@ -433,6 +442,9 @@ void MainWindow::adjustedAxis()
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
     ui->btnGoZHome->setEnabled(true);
+    ui->outputLines->setEnabled(true);
+    ui->Lines->setEnabled(true);
+    ui->outputCurLine->setEnabled(true);
 }
 
 void MainWindow::disableAllButtons()
@@ -452,6 +464,9 @@ void MainWindow::disableAllButtons()
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     ui->btnGoZHome->setEnabled(false);
+    ui->outputLines->setEnabled(false);
+    ui->Lines->setEnabled(false);
+    ui->outputCurLine->setEnabled(false);
 }
 
 void MainWindow::enableGrblDialogButton()
@@ -471,14 +486,17 @@ void MainWindow::enableGrblDialogButton()
     ui->btnUnlockGrbl->setEnabled(true);
     ui->btnGoHomeSafe->setEnabled(true);
     ui->btnGoZHome->setEnabled(true);
+    ui->outputLines->setEnabled(true);
+    ui->Lines->setEnabled(true);
+    ui->outputCurLine->setEnabled(true);
 
     if (ui->filePath->text().length() > 0)
     {
         ui->Begin->setEnabled(true);
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
-        ui->outputRuntime->setEnabled(false);
-        ui->labelRuntime->setEnabled(false);
+        ui->outputRuntime->setEnabled(true);
+        ui->labelRuntime->setEnabled(true);
     }
     else
     {
@@ -599,6 +617,9 @@ void MainWindow::openFile()
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
+        ui->outputLines->setEnabled(true);
+        ui->Lines->setEnabled(true);
+        ui->outputCurLine->setEnabled(true);
     }
     else
     {
@@ -607,6 +628,9 @@ void MainWindow::openFile()
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
+        ui->outputLines->setEnabled(false);
+        ui->Lines->setEnabled(true);
+        ui->outputCurLine->setEnabled(false);
     }
 
     if (ui->filePath->text().length() > 0)

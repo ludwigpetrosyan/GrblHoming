@@ -22,3 +22,12 @@ double ItemToBase::screenY(double fy)
 {
     return height - ((fy * scale) + offsety);
 }
+
+double ItemToBase::itemX(double fx)
+{
+	return (fx - offsetx)/scale;
+}
+double ItemToBase::itemY(double fy)
+{
+	return (height - fy - offsety)/scale;
+}

@@ -239,3 +239,38 @@ void RenderItemList::updateLivePoint()
         livePoint.toInches();
     }
 }
+
+void RenderItemList::updateXYPoint()
+{
+    if (mm && !xyPoint.mm)
+    {
+        xyPoint.toMm();
+    }
+    else if (!mm && xyPoint.mm)
+    {
+        xyPoint.toInches();
+    }
+}
+
+ void RenderItemList::getPosCoord(poscoord* pcor, double xx, double yy)
+ {
+	 ItemToBase *item = list.at(0);
+     
+     double rys = 0.0;
+     double rxs = 0.0;
+     
+      rxs = item->itemX(xx);
+      rys = item->itemY(yy);
+      
+      pcor->x = rxs;
+      pcor->y = rys;
+      
+     //printf("POINT POSITION X%f Y%f\n", rxs, rys);
+}
+
+
+ void RenderItemList::setLivePointXY(const PosItem& xyPoint1)
+ {
+	  xyPoint = xyPoint1;
+      updateXYPoint();
+}

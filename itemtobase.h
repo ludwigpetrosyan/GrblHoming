@@ -22,6 +22,9 @@ public:
 
     double screenX(double x);
     double screenY(double y);
+    
+    double itemX(double x);
+    double itemY(double y);
 
     int getIndex() { return index; }
 

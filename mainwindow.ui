@@ -211,6 +211,54 @@
       <string/>
      </property>
     </widget>
+    <widget class="QLabel" name="Lines">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>130</y>
+       <width>41</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Lines</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="outputLines">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>200</x>
+       <y>130</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QLabel" name="outputCurLine">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>130</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
    </widget>
    <widget class="QPushButton" name="btnGRBL">
     <property name="enabled">
@@ -445,7 +493,7 @@ GRBL</string>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <property name="sizePolicy">
@@ -831,6 +879,9 @@ GRBL</string>
          </colorrole>
         </disabled>
        </palette>
+      </property>
+      <property name="mouseTracking">
+       <bool>true</bool>
       </property>
       <property name="autoFillBackground">
        <bool>true</bool>

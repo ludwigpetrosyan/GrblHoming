@@ -13,3 +13,5 @@ Output/
 android/
 GrblController.app/
 nbproject/
+moc*
+*.o
