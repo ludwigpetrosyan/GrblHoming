@@ -18,7 +18,8 @@ GCode::GCode()
       maxZ(0), useAggressivePreload(false), motionOccurred(false)
 {
     // use base class's timer - use it to capture random text from the controller
-    startTimer(1000);
+    //startTimer(1000);
+    startTimer(500);
 }
 
 void GCode::openPort(QString commPortStr, int baudrate)
@@ -636,8 +637,8 @@ void GCode::parseCoordinates(const QString& received, bool aggressive)
         captureCount = 3;
     }
     
-     char *c_str = received.toLatin1().data();
-     printf("RECEIVED %s\n", c_str);
+     //char *c_str = received.toLatin1().data();
+     //printf("RECEIVED %s\n", c_str);
 
     const QString coordRegExp(prepend + "(-*\\d+\\.\\d+),(-*\\d+\\.\\d+),(-*\\d+\\.\\d+)" + append);
     const QRegExp rxStateMPos(preamble + coordRegExp);
