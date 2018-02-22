@@ -102,6 +102,8 @@ signals:
     void setProgress(int percent);
     void setRuntime(QString runtime);
     void sendSetHome();
+    void sendSetZ0();
+    void sendSetXY0();
     void sendSetProbe();
     void sendGrblReset();
     void sendGrblUnlock();
@@ -121,6 +123,8 @@ private slots:
     void incY();
     void incZ();
     void setHome();
+    void setZ0();
+    void setXY0();
     void setProbe();
         //manual
     void gotoXYZ();

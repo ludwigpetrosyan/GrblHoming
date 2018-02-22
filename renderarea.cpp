@@ -16,6 +16,8 @@ RenderArea::RenderArea(QWidget *parent)
     
     xyPosCoord.x = 0;
     xyPosCoord.y = 0;
+    
+    scale = 1;
 }
 
 void RenderArea::setItems(QList<PosItem> itemsRcvd)
@@ -63,6 +65,8 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     listToRender.rescale(size);
 
     QPainter painter(this);
+    
+    painter.scale(scale,scale);
 
     painter.setPen(penProposedPath);
     listToRender.writePath(painter, false);
@@ -112,6 +116,15 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event)
 {
 	//if ((event->buttons() & Qt::LeftButton) && scribbling)
     //    drawLineTo(event->pos());
+}
+
+void RenderArea::wheelEvent ( QWheelEvent * event )
+{
+	
+    //scale+=(event->delta()/120); //or use any other step for zooming 
+    scale+=(event->delta()/120)*0.1; //or use any other step for zooming 
+    //scale+=(event->delta()/1200); //or use any other step for zooming 
+    printf("WheelEVENT delat %d scale %f\n", event->delta(), scale);
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *event)

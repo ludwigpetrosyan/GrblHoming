@@ -51,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->IncYBtn,SIGNAL(clicked()),this,SLOT(incY()));
     connect(ui->IncZBtn,SIGNAL(clicked()),this,SLOT(incZ()));
     connect(ui->btnSetHome,SIGNAL(clicked()),this,SLOT(setHome()));
+    connect(ui->SetXY0,SIGNAL(clicked()),this,SLOT(setXY0()));
+    connect(ui->SetZ0,SIGNAL(clicked()),this,SLOT(setZ0()));
     connect(ui->btnProbe,SIGNAL(clicked()),this,SLOT(setProbe()));
     connect(ui->Command,SIGNAL(editingFinished()),this,SLOT(gotoXYZ()));
     connect(ui->Begin,SIGNAL(clicked()),this,SLOT(begin()));
@@ -79,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this, SIGNAL(setProgress(int)), ui->progressFileSend, SLOT(setValue(int)));
     connect(this, SIGNAL(setRuntime(QString)), ui->outputRuntime, SLOT(setText(QString)));
     connect(this, SIGNAL(sendSetHome()), &gcode, SLOT(grblSetHome()));
+    connect(this, SIGNAL(sendSetZ0()), &gcode, SLOT(grblSetZ0()));
+    connect(this, SIGNAL(sendSetXY0()), &gcode, SLOT(grblSetXY0()));
     connect(this, SIGNAL(sendSetProbe()), &gcode, SLOT(grblSetProbe()));
     connect(this, SIGNAL(sendGrblReset()), &gcode, SLOT(sendGrblReset()));
     connect(this, SIGNAL(sendGrblUnlock()), &gcode, SLOT(sendGrblUnlock()));
@@ -177,6 +181,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->labelRuntime->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->SetXY0->setEnabled(false);
+    ui->SetZ0->setEnabled(false);
     ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
@@ -234,6 +240,8 @@ void MainWindow::begin()
     ui->btnGRBL->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->SetXY0->setEnabled(false);
+    ui->SetZ0->setEnabled(false);
     ui->btnProbe->setEnabled(false);
     ui->btnGoHomeSafe->setEnabled(false);
     ui->btnGoZHome->setEnabled(false);
@@ -249,6 +257,8 @@ void MainWindow::stop()
     ui->Stop->setEnabled(false);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->SetXY0->setEnabled(true);
+    ui->SetZ0->setEnabled(true);
     ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
@@ -292,6 +302,8 @@ void MainWindow::stopSending()
     ui->btnOpenPort->setEnabled(true);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->SetXY0->setEnabled(true);
+    ui->SetZ0->setEnabled(true);
     ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
@@ -311,6 +323,18 @@ void MainWindow::setHome()
 {
     resetProgress();
     sendSetHome();
+}
+
+void MainWindow::setZ0()
+{
+    resetProgress();
+    sendSetZ0();
+}
+
+void MainWindow::setXY0()
+{
+    resetProgress();
+    sendSetXY0();
 }
 
 void MainWindow::setProbe()
@@ -399,6 +423,8 @@ void MainWindow::portIsClosed(bool reopen)
     ui->btnOpenPort->setStyleSheet(styleSheet);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->SetXY0->setEnabled(false);
+    ui->SetZ0->setEnabled(false);
     ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
@@ -437,6 +463,8 @@ void MainWindow::adjustedAxis()
     ui->openFile->setEnabled(true);
     ui->btnGRBL->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->SetXY0->setEnabled(true);
+    ui->SetZ0->setEnabled(true);
     ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);
@@ -459,6 +487,8 @@ void MainWindow::disableAllButtons()
     ui->openFile->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
+    ui->SetXY0->setEnabled(false);
+    ui->SetZ0->setEnabled(false);
     ui->btnProbe->setEnabled(false);
     ui->btnResetGrbl->setEnabled(false);
     ui->btnUnlockGrbl->setEnabled(false);
@@ -481,6 +511,8 @@ void MainWindow::enableGrblDialogButton()
     ui->groupBoxSendFile->setEnabled(true);
     ui->groupBoxManualGCode->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
+    ui->SetXY0->setEnabled(true);
+    ui->SetZ0->setEnabled(true);
     ui->btnProbe->setEnabled(true);
     ui->btnResetGrbl->setEnabled(true);
     ui->btnUnlockGrbl->setEnabled(true);

@@ -106,6 +106,20 @@ void GCode::grblSetHome()
     gotoXYZ("G92 x0 y0 z0");
 }
 
+void GCode::grblSetZ0()
+{
+    clearToHome();
+
+    gotoXYZ("G92 z0");
+}
+
+void GCode::grblSetXY0()
+{
+    clearToHome();
+
+    gotoXYZ("G92 x0 y0");
+}
+
 void GCode::grblSetProbe()
 {
     //clearToHome();

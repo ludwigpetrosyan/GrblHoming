@@ -76,6 +76,8 @@ public slots:
     void axisAdj(char axis, float coord, bool inv, bool absoluteAfterAxisAdj);
     void setResponseWait(int waitTime, double zJogRate, bool useMm, bool zRateLimit, double zRateLimitAmount, double xyRateLimitAmount, bool useAggressivePreload);
     void grblSetHome();
+    void grblSetZ0();
+    void grblSetXY0();
     void grblSetProbe();
     void sendGrblReset();
     void sendGrblUnlock();
