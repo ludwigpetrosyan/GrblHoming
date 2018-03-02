@@ -518,7 +518,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Work</string>
+               <string>WPos</string>
               </property>
              </widget>
             </item>
@@ -743,7 +743,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>Mach </string>
+               <string>MPos</string>
               </property>
              </widget>
             </item>
@@ -1138,6 +1138,12 @@
               <property name="enabled">
                <bool>true</bool>
               </property>
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="font">
                <font>
                 <pointsize>11</pointsize>
@@ -1156,7 +1162,7 @@
               <item>
                <widget class="QLabel" name="lblStep_2">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1169,7 +1175,7 @@
               <item>
                <widget class="QComboBox" name="comboJogRate">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
