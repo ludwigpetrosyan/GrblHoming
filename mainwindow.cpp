@@ -169,8 +169,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui->cmbPort->setCurrentIndex(portIndex);
 
     ui->tabAxisVisualizer->setEnabled(false);
-    ui->groupBoxSendFile->setEnabled(true);
-    ui->groupBoxManualGCode->setEnabled(false);
+    //ui->groupBoxSendFile->setEnabled(true);
+    //ui->groupBoxManualGCode->setEnabled(false);
     ui->Begin->setEnabled(false);
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
@@ -226,7 +226,7 @@ void MainWindow::begin()
     resetProgress();
 
     ui->tabAxisVisualizer->setEnabled(false);
-    ui->groupBoxManualGCode->setEnabled(false);
+    //ui->groupBoxManualGCode->setEnabled(false);
 
     ui->Begin->setEnabled(false);
     ui->Stop->setEnabled(true);
@@ -293,7 +293,7 @@ void MainWindow::goZHomeSafe()
 void MainWindow::stopSending()
 {
     ui->tabAxisVisualizer->setEnabled(true);
-    ui->groupBoxManualGCode->setEnabled(true);
+    //ui->groupBoxManualGCode->setEnabled(true);
     ui->Begin->setEnabled(true);
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
@@ -394,8 +394,8 @@ void MainWindow::openPortCtl(bool reopen)
         ui->openFile->setEnabled(false);
 
         ui->tabAxisVisualizer->setEnabled(false);
-        ui->groupBoxSendFile->setEnabled(false);
-        ui->groupBoxManualGCode->setEnabled(false);
+        //ui->groupBoxSendFile->setEnabled(false);
+        //ui->groupBoxManualGCode->setEnabled(false);
         ui->cmbPort->setEnabled(false);
         ui->cmbBaudRate->setEnabled(false);
         ui->btnOpenPort->setEnabled(false);
@@ -414,8 +414,8 @@ void MainWindow::portIsClosed(bool reopen)
     SLEEP(100);
 
     ui->tabAxisVisualizer->setEnabled(false);
-    ui->groupBoxSendFile->setEnabled(false);
-    ui->groupBoxManualGCode->setEnabled(false);
+   // ui->groupBoxSendFile->setEnabled(false);
+   // ui->groupBoxManualGCode->setEnabled(false);
     ui->cmbPort->setEnabled(true);
     ui->cmbBaudRate->setEnabled(true);
     ui->btnOpenPort->setEnabled(true);
@@ -449,7 +449,7 @@ void MainWindow::portIsOpen(bool sendCode)
 void MainWindow::adjustedAxis()
 {
     ui->tabAxisVisualizer->setEnabled(true);
-    ui->groupBoxManualGCode->setEnabled(true);
+    //ui->groupBoxManualGCode->setEnabled(true);
 
     if (ui->filePath->text().length() > 0)
         ui->Begin->setEnabled(true);
@@ -478,7 +478,7 @@ void MainWindow::adjustedAxis()
 void MainWindow::disableAllButtons()
 {
     ui->tabAxisVisualizer->setEnabled(false);
-    ui->groupBoxManualGCode->setEnabled(false);
+    //ui->groupBoxManualGCode->setEnabled(false);
     ui->Begin->setEnabled(false);
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
@@ -508,8 +508,8 @@ void MainWindow::enableGrblDialogButton()
     ui->cmbPort->setEnabled(false);
     ui->cmbBaudRate->setEnabled(false);
     ui->tabAxisVisualizer->setEnabled(true);
-    ui->groupBoxSendFile->setEnabled(true);
-    ui->groupBoxManualGCode->setEnabled(true);
+    //ui->groupBoxSendFile->setEnabled(true);
+    //ui->groupBoxManualGCode->setEnabled(true);
     ui->btnSetHome->setEnabled(true);
     ui->SetXY0->setEnabled(true);
     ui->SetZ0->setEnabled(true);
