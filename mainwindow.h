@@ -110,6 +110,7 @@ signals:
     void goToHome();
     void goToZHome();
     void setItems(QList<PosItem>);
+    void setLabLines(int numLines);
 
 private slots:
     //buttons

@@ -64,6 +64,9 @@ signals:
     void setUnitsMachine(QString value);
     void setLivePoint(double x, double y, bool isMM);
     void setVisCurrLine(int currLine);
+    void setLabLines(int numLines);
+    //void setLabCurrLine(QString value);
+    //void setLabLines(QString value);
 
 public slots:
     //void openPort(QString commPortStr);

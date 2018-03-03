@@ -889,6 +889,8 @@ void GCode::sendFile(QString path)
         }
         if (totalLineCount == 0)
             totalLineCount = 1;
+        
+        emit setLabLines(totalLineCount);
 
         code.seek(0);
 

@@ -108,6 +108,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&gcode, SIGNAL(setUnitsMachine(QString)), ui->outputUnitsMachine, SLOT(setText(QString)));
     connect(&gcode, SIGNAL(setLivePoint(double, double, bool)), ui->wgtVisualizer, SLOT(setLivePoint(double, double, bool)));
     connect(&gcode, SIGNAL(setVisCurrLine(int)), ui->wgtVisualizer, SLOT(setVisCurrLine(int)));
+    
+    connect(&gcode, SIGNAL(setVisCurrLine(int)), ui->outputCurLine, SLOT(setNum(int)));
+    connect(&gcode, SIGNAL(setLabLines(int)), ui->outputLines, SLOT(setNum(int)));
+    connect(this, SIGNAL(setLabLines(int)), ui->outputLines, SLOT(setNum(int)));
+    
+    //connect(&gcode, SIGNAL(setLabCurrLine(QString)), ui->outputCurLine, SLOT(setText(QString)));
+    //connect(&gcode, SIGNAL(setLabLines(QString)), ui->outputLines, SLOT(setText(QString)));
 
     connect(&timer, SIGNAL(setRuntime(QString)), ui->outputRuntime, SLOT(setText(QString)));
 
@@ -298,6 +305,9 @@ void MainWindow::stopSending()
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
     ui->outputRuntime->setEnabled(false);
+    ui->outputLines->setEnabled(false);
+    ui->Lines->setEnabled(false);
+    ui->outputCurLine->setEnabled(false);
     ui->labelRuntime->setEnabled(false);
     ui->btnOpenPort->setEnabled(true);
     ui->btnGRBL->setEnabled(true);
@@ -386,8 +396,8 @@ void MainWindow::openPortCtl(bool reopen)
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
-        ui->outputLines->setEnabled(false);
         ui->Lines->setEnabled(false);
+        ui->outputLines->setEnabled(false);
         ui->outputCurLine->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
         ui->btnOpenPort->setEnabled(false);
@@ -457,7 +467,10 @@ void MainWindow::adjustedAxis()
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
     ui->outputRuntime->setEnabled(false);
+    ui->Lines->setEnabled(false);
     ui->labelRuntime->setEnabled(false);
+    ui->outputLines->setEnabled(false);
+    ui->outputCurLine->setEnabled(false);
 
     ui->btnOpenPort->setEnabled(true);
     ui->openFile->setEnabled(true);
@@ -483,7 +496,10 @@ void MainWindow::disableAllButtons()
     ui->Stop->setEnabled(false);
     ui->progressFileSend->setEnabled(false);
     ui->outputRuntime->setEnabled(false);
+    ui->Lines->setEnabled(false);
     ui->labelRuntime->setEnabled(false);
+    ui->outputLines->setEnabled(false);
+    ui->outputCurLine->setEnabled(false);
     ui->openFile->setEnabled(false);
     ui->btnGRBL->setEnabled(false);
     ui->btnSetHome->setEnabled(false);
@@ -528,7 +544,11 @@ void MainWindow::enableGrblDialogButton()
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(true);
+        ui->Lines->setEnabled(true);
         ui->labelRuntime->setEnabled(true);
+        ui->outputLines->setEnabled(true);
+        ui->Lines->setEnabled(true);
+        ui->outputCurLine->setEnabled(true);
     }
     else
     {
@@ -536,7 +556,10 @@ void MainWindow::enableGrblDialogButton()
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
+        ui->Lines->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
+        ui->outputLines->setEnabled(false);
+        ui->outputCurLine->setEnabled(false);
     }
 
     ui->btnGRBL->setEnabled(true);
@@ -648,10 +671,10 @@ void MainWindow::openFile()
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
+        ui->Lines->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
-        ui->outputLines->setEnabled(true);
-        ui->Lines->setEnabled(true);
-        ui->outputCurLine->setEnabled(true);
+        ui->outputLines->setEnabled(false);
+        ui->outputCurLine->setEnabled(false);
     }
     else
     {
@@ -659,9 +682,9 @@ void MainWindow::openFile()
         ui->Stop->setEnabled(false);
         ui->progressFileSend->setEnabled(false);
         ui->outputRuntime->setEnabled(false);
+        ui->Lines->setEnabled(false);
         ui->labelRuntime->setEnabled(false);
         ui->outputLines->setEnabled(false);
-        ui->Lines->setEnabled(true);
         ui->outputCurLine->setEnabled(false);
     }
 
@@ -693,6 +716,8 @@ void MainWindow::preProcessFile(QString filepath)
         }
         if (totalLineCount == 0)
             totalLineCount = 1;
+        
+        emit setLabLines(totalLineCount);
 
         code.seek(0);
 
