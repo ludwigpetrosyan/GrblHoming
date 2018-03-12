@@ -113,6 +113,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&gcode, SIGNAL(setLabLines(int)), ui->outputLines, SLOT(setNum(int)));
     connect(this, SIGNAL(setLabLines(int)), ui->outputLines, SLOT(setNum(int)));
     
+    connect(ui->doubleSpinBoxJogRate, SIGNAL(valueChanged(double)), this, SLOT(setDoubleJogRate(double)));
+    
     //connect(&gcode, SIGNAL(setLabCurrLine(QString)), ui->outputCurLine, SLOT(setText(QString)));
     //connect(&gcode, SIGNAL(setLabLines(QString)), ui->outputLines, SLOT(setText(QString)));
 
@@ -198,6 +200,7 @@ MainWindow::MainWindow(QWidget *parent) :
     styleSheet = ui->btnOpenPort->styleSheet();
     ui->statusList->setEnabled(true);
     ui->openFile->setEnabled(true);
+    ui->doubleSpinBoxJogRate->setEnabled(true);
 
     this->setWindowTitle(GRBL_CONTROLLER_NAME_AND_VERSION);
 
@@ -292,7 +295,7 @@ void MainWindow::goHomeSafe()
 
 void MainWindow::goZHomeSafe()
 {
-    printf("Go ToZHome Safe\n");
+    //printf("Go ToZHome Safe\n");
     emit goToZHome();
 }
 
@@ -864,6 +867,26 @@ double MainWindow::decodeDouble(QString value, bool& valid)
     return value.toDouble();
 }
 
+
+void MainWindow::setDoubleJogRate(double jr)
+{
+    double jR = 0.0;
+    jR = ui->doubleSpinBoxJogRate->value();
+    //printf("JogRate %f\n", jR);
+    
+    QSettings settings;
+
+    settings.setValue(SETTINGS_Z_JOG_RATE, jR);
+
+//    settings.setValue(SETTINGS_Z_RATE_LIMIT, ui->chkLimitZRate->isChecked());
+//    settings.setValue(SETTINGS_Z_RATE_LIMIT_AMOUNT, ui->doubleSpinZRateLimit->value());
+//    settings.setValue(SETTINGS_XY_RATE_AMOUNT, ui->doubleSpinXYRate->value());
+
+    emit setSettings();
+    
+    
+}
+
 void MainWindow::readSettings()
 {
     // use platform-independent settings storage, i.e. registry under Windows
@@ -932,6 +955,8 @@ void MainWindow::updateSettingsFromOptionDlg(QSettings& settings)
 
     zRateLimitAmount = settings.value(SETTINGS_Z_RATE_LIMIT_AMOUNT, DEFAULT_Z_LIMIT_RATE).value<double>();
     xyRateAmount = settings.value(SETTINGS_XY_RATE_AMOUNT, DEFAULT_XY_RATE).value<double>();
+    
+    emit ui->doubleSpinBoxJogRate->setValue(zJogRate);
 }
 
 // save last state of settings

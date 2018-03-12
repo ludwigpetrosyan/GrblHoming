@@ -111,6 +111,7 @@ signals:
     void goToZHome();
     void setItems(QList<PosItem>);
     void setLabLines(int numLines);
+    
 
 private slots:
     //buttons
@@ -160,6 +161,7 @@ private slots:
     void updateCoordinates(Coord3D machineCoord, Coord3D workCoord);
     void goHomeSafe();
     void goZHomeSafe();
+    void setDoubleJogRate(double jr);
 
 private:
     // enums

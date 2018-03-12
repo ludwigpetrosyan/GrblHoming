@@ -35,7 +35,7 @@
 #define SETTINGS_NAME_FILTER                "namefilter"
 #define SETTINGS_DIRECTORY                  "directory"
 #define SETTINGS_PORT                       "port"
-#define SETTINGS_PORT_BAUDRATE                       "9600"
+//#define SETTINGS_PORT_BAUDRATE                       "9600"
 #define SETTINGS_PORT_BAUDRATE                       "115200"
 
 
